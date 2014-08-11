@@ -6,7 +6,6 @@ The fileParser object takes in our command line arguments, and proceeds to find 
 Can only take in 1 input field
 
 */
-
 function fileParser(args){
   this.args = args;
   this.numargs = args.length;
@@ -15,17 +14,17 @@ function fileParser(args){
   this.input = "";
 }
 
-function fileParserMailbox(fileContainer,fileCounter){
+function fileParserMailbox(fileContainer,fileCounter){  //This class is used to update the fileContainer in a subloop below
   this.container = fileContainer;
   this.counter = fileCounter;
 }
 
-fileParser.prototype.begin = function(){    
+fileParser.prototype.fileExists = function(){                //essentially used to check if the filename actually exists as a file 
   fs = require('fs');
   var filename = this.args[0];
   if (fs.existsSync(filename)) {
     var input = fs.createReadStream(filename);
-    this.fileContainer[filename] = "root";
+    this.fileContainer["root"] = filename;
     this.input = input;
     return true;
   }
@@ -72,16 +71,17 @@ fileParser.prototype.readLines = function(func){  //Reads every line of a file f
   });
 }
 
-fileParser.prototype.parse = function(){        //function used to actually parse a script
-  var begun = false;
+fileParser.prototype.parse = function(callback){        //function used to actually parse a page
+  var results = {};
   if(this.argCheck()){      //continue
-    if(this.begin()){
+    if(this.fileExists()){
       this.readLines(function(a){
           var container = a.fileContainer;
-          console.log(container);
           for(var key in container){
-          // console.log(key + " " + container[key]);
+            // console.log(key + " " + container[key]);
           }
+          results = container;
+          callback(results);
       });
     }
   }

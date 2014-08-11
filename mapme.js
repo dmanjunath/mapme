@@ -7,21 +7,19 @@
   
   by: Hareesh Nagaraj & Dheeraj Manjunath
 */
-var parseArgs = require('minimist');      //Using the minimist node package 
-var fs = require('fs');                   //Requiring the basic file system
-var fileParser = require('./fileParser.js');
-
+var parseArgs = require('minimist');          //Using the minimist node package 
+var fs = require('fs');                       //Requiring the basic file system
+var fileParser = require('./fileParser.js');  //fileParser is the class used to parse the page for dependencies
 var argArray = parseArgs(process.argv.slice(2));  //Grabbing the command line arguments
 var argv = argArray['_'];
 
-var parser = new fileParser(argv);  
-parser.parse();
-// if(parser.argCheck()){                    //Checking the number of arguments, reading lines based on callback
-//   parser.begin(function(){
-//     parser.readLines(function(){
-//         for(var key in parser.fileContainer){
-//           console.log(key + " " + parser.fileContainer[key]);
-//         }
-//     });
-//   });
-// }
+var parser = new fileParser(argv);      
+var result = parser.parse(function(result){
+   createPage(result);
+});
+
+function createPage(result){
+  var pageCreator = require('./pageCreator.js');  //pageCreator is the class that generates the D3 page
+  var page = new pageCreator(result);
+  page.create();
+}
