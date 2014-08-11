@@ -1,0 +1,23 @@
+{
+  "name": "mapme",
+  "version": "0.0.0",
+  "description": "dependency visualization",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dmanjunath/mapme.git"
+  },
+  "keywords": [
+    "dependency",
+    "visualization"
+  ],
+  "author": "Hareesh Nagaraj <hareesh.nagaraj@gmail.com> (https://github.com/hareeshnagaraj)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmanjunath/mapme/issues"
+  },
+  "homepage": "https://github.com/dmanjunath/mapme"
+}
