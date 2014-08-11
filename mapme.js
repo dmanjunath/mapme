@@ -15,6 +15,13 @@ var argArray = parseArgs(process.argv.slice(2));  //Grabbing the command line ar
 var argv = argArray['_'];
 
 var parser = new fileParser(argv);  
-if(parser.argCheck()){                    //Checking the number of arguments
-  parser.begin();
-}
+parser.parse();
+// if(parser.argCheck()){                    //Checking the number of arguments, reading lines based on callback
+//   parser.begin(function(){
+//     parser.readLines(function(){
+//         for(var key in parser.fileContainer){
+//           console.log(key + " " + parser.fileContainer[key]);
+//         }
+//     });
+//   });
+// }
