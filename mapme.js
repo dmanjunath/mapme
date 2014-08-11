@@ -13,5 +13,7 @@ var fileParser = require('./fileParser.js');
 var argArray = parseArgs(process.argv.slice(2));  //Grabbing the command line arguments
 var argv = argArray['_'];
 
-var parser = new fileParser(argv);
-parser.begin();
+var parser = new fileParser(argv);  
+if(parser.argCheck()){                    //Checking the number of arguments
+  parser.begin();
+}
