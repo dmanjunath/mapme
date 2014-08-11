@@ -4,7 +4,8 @@
   
   requirements:
   minimist (https://www.npmjs.org/package/minimist)
-
+  
+  by: Hareesh Nagaraj & Dheeraj Manjunath
 */
 var parseArgs = require('minimist');      //Using the minimist node package 
 var fs = require('fs');                   //Requiring the basic file system
