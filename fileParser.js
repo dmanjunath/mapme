@@ -6,12 +6,17 @@ The fileParser object takes in our command line arguments, and proceeds to find 
 Can only take in 1 input field
 
 */
+
 function fileParser(args){
   this.args = args;
   this.numargs = args.length;
   this.files = {};
   this.lineParser = function(data){           //Checks if the line contains our desired words (just require for now)
-    console.log('Line: ' + data);
+    if(contains(data,"require")){
+      var rawfile = data.split("require")[1];
+      var file = lineStripper(rawfile);
+      console.log(file);
+    }
   }; 
   this.readLines = function (input,func){     //Reads every line of a file from an fsStream
     var remaining = '';
@@ -57,4 +62,16 @@ fileParser.prototype.argCheck = function(){       //ensuring number of arguments
     return true;
   }
 }
+
+function contains(a,b){            //simple function to check for substrings
+  return a.indexOf(b) != -1; 
+}
+function lineStripper(string){     //function to strip lines to solo filenames
+  var regex = /\(([^)]+)\)/;
+  string = string.replace(";","");
+  string = string.replace(",","");
+  string = regex.exec(string);
+  return string[1];
+}
+
 module.exports = fileParser;
