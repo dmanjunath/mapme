@@ -13,12 +13,37 @@ pageCreator.prototype.create = function(){    //used to create the page that con
 
   this.doc += this.getHeadString();
   this.doc += this.getTreeString();
-  this.doc += JSON.stringify(this.nodes);
+  // this.writeJSON();
 
   var writeStream = fs.createWriteStream('dependencies.html','w');
   writeStream.write(this.doc,'UTF-8',function(error){
+  
   });
+  writeStream.end();
 }
+
+
+pageCreator.prototype.getTreeJson = function(){           //appropriately formatting the json
+  var raw = this.nodes;
+
+  var finalJSON = {};
+  var parent = this.root;
+  finalJSON.name = this.root;
+  finalJSON.parent = "null";
+  var children = [];
+  for(var key in raw){
+    if(key != 'root'){
+      var child = {};
+      child["name"] = key;
+      child["parent"] = parent;
+      children.push(child);
+    }
+  }
+  finalJSON["children"] = children;
+  console.log(finalJSON);
+  return JSON.stringify(finalJSON,null,2);
+}
+
 
 pageCreator.prototype.getHeadString = function(){         //generate the head of the html element
   var head = '\
@@ -46,23 +71,72 @@ pageCreator.prototype.getHeadString = function(){         //generate the head of
 }
 
 pageCreator.prototype.getTreeString = function(){     //generate the tree of the html element
-  var script = '<script>\
-  var margin = {top: 20, right: 120, bottom: 20, left: 120},\
-      width = 960 - margin.right - margin.left,\
+  var json = this.getTreeJson();
+
+  var script = '\
+  <body>\
+  <script>\
+  \nvar margin = {top: 20, right: 120, bottom: 20, left: 120},\
+      width = 1200 - margin.right - margin.left,\
       height = 800 - margin.top - margin.bottom;\
-  var i = 0,\
+  \nvar i = 0,\
       duration = 750,\
       root;\
-  var tree = d3.layout.tree()\
+  \nvar tree = d3.layout.tree()\
       .size([height, width]);\
-  var diagonal = d3.svg.diagonal()\
+  \nvar diagonal = d3.svg.diagonal()\
     .projection(function(d) { return [d.y, d.x]; });\
-  var svg = d3.select("body").append("svg")\
-    .attr("width", width + margin.right + margin.left)\
-    .attr("height", height + margin.top + margin.bottom)\
-  .append("g")\
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");\
+  \nvar svg = d3.select("body").append("svg");\
+  \nsvg.attr("width", width + margin.right + margin.left);\
+  \nsvg.attr("height", height + margin.top + margin.bottom)\
+  \nsvg.append("g")\
+  \nsvg.attr("transform", "translate(" + margin.left + "," + margin.top + ")");\
+  \nroot = '+json+';\
+  \nupdate(root)\
+\n  console.log(d3.select("body").append("a"));\
+\n  function update(source) {\
+\n  // Compute the new tree layout.\
+\n  var nodes = tree.nodes(root).reverse(),\
+\n  links = tree.links(nodes);\
+\
+\n  // Normalize for fixed-depth.\
+\n  nodes.forEach(function(d) { d.y = d.depth * 180; });\
+\
+\n  // Declare the nodes…\
+\n  var node = svg.selectAll("g.node")\
+\n    .data(nodes, function(d) { return d.id || (d.id = ++i); });\
+\
+\n  // Enter the nodes.\
+\n  var nodeEnter = node.enter().append("g")\
+\n    .attr("class", "node")\
+\n    .attr("transform", function(d) { \
+\n      return "translate(" + d.y + "," + d.x + ")"; });\
+\n\
+\n  nodeEnter.append("circle")\
+\n    .attr("r", 10)\
+\n    .style("fill", "#fff");\
+\n\
+\n  nodeEnter.append("text")\
+\n    .attr("x", function(d) { \
+\n      return d.children || d._children ? -13 : 13; })\
+\n    .attr("dy", ".35em")\
+\n    .attr("text-anchor", function(d) { \
+\n      return d.children || d._children ? "end" : "start"; })\
+\n    .text(function(d) { return d.name; })\
+\n    .style("fill-opacity", 1);\
+\n\
+\n  // Declare the links…\
+\n  var link = svg.selectAll("path.link")\
+\n    .data(links, function(d) { return d.target.id; });\
+\n\
+\n  // Enter the links.\
+\n  link.enter().insert("path", "g")\
+\n    .attr("class", "link")\
+\n    .attr("d", diagonal);\
+\n\
+}\
   </script>\
+  </body>\
   ';
   return script;
 }
