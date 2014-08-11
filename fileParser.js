@@ -25,6 +25,7 @@ fileParser.prototype.begin = function(){
   var filename = this.args[0];
   if (fs.existsSync(filename)) {
     var input = fs.createReadStream(filename);
+    this.fileContainer[filename] = "root";
     this.input = input;
     return true;
   }
@@ -48,7 +49,6 @@ fileParser.prototype.readLines = function(func){  //Reads every line of a file f
   var input = this.input;
   var mailbox = new fileParserMailbox(this.fileContainer,this.fileCounter);
   var localContainer = mailbox.container;
-  var localCounter = mailbox.counter;
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
@@ -57,8 +57,7 @@ fileParser.prototype.readLines = function(func){  //Reads every line of a file f
       remaining = remaining.substring(index + 1);
       var newFile = lineParser((line));
       if(newFile)
-        localContainer[localCounter] = newFile;
-        localCounter++;
+        localContainer[newFile] = {};
       index = remaining.indexOf('\n');
     }
   });
@@ -66,8 +65,7 @@ fileParser.prototype.readLines = function(func){  //Reads every line of a file f
     if (remaining.length > 0) {
       var newFile = lineParser(remaining);
       if(newFile)
-        localContainer[localCounter] = newFile;
-        localCounter++;
+        localContainer[newFile] = {};
     }
     this.fileContainer = mailbox.container;
     func(this);
@@ -82,8 +80,8 @@ fileParser.prototype.parse = function(){        //function used to actually pars
           var container = a.fileContainer;
           console.log(container);
           for(var key in container){
-          console.log(key + " " + container[key]);
-        }
+          // console.log(key + " " + container[key]);
+          }
       });
     }
   }
