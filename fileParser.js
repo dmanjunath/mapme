@@ -36,7 +36,7 @@ fileParser.prototype.fileExists = function(that){
       defer.resolve(true);
     }
     else {
-      console.log("Please enter a valid file" + filename);
+      console.log("Invalid file " + filename);
       defer.reject(false);
     }
   });
@@ -73,18 +73,20 @@ fileParser.prototype.readLines = function(func){
       var line = remaining.substring(0, index);
       remaining = remaining.substring(index + 1);
       var newFile = lineParser((line));
-      if(newFile)
-        newFile = dotRemover(newFile)
+      if(newFile){
+        newFile = directoryCleaner(newFile)
         localContainer[newFile] = {};
+      }
       index = remaining.indexOf('\n');
     }
   });
   input.on('end', function() {
     if (remaining.length > 0) {
       var newFile = lineParser(remaining);
-      if(newFile)
-        newFile = dotRemover(newFile)
+      if(newFile){
+        newFile = directoryCleaner(newFile)
         localContainer[newFile] = {};
+      }
     }
     this.fileContainer = mailbox.container;
     func(this);
@@ -99,19 +101,49 @@ fileParser.prototype.parse = function(callback){
   that = this;
   this.argCheck()
   .then(function(){
+    callback(results)
     return that.fileExists(that);
   })
   .then(function(){
     that.readLines(function(a){
-      var container = a.fileContainer;
-      for(var key in container){
-        // console.log(key + " " + container[key]);
-      }
+      var container = a.fileContainer;      
+      //Having read and updated the container, we need to recurse into the resulting nodes and add 
+      childSpawner(container);
       results = container;
       callback(results);
     });
   });
 };
+
+/*
+Spawning child fileParsers for each element
+*/
+function childSpawner(container,callback){
+  var staticArray = [container.length]
+  var i = 0;
+  for( key in container ){
+    staticArray[i] = key;
+    i++;
+  }
+  var index = 0;
+  (function(){
+    function loadChild(){
+      if(index < staticArray.length){
+        var key = staticArray[index]
+        // console.log(key)
+        // console.log(container[key])
+        var parser = new fileParser([key])
+        parser.fileContainer = container[key]
+        parser.parse(function(result){
+          // console.log(result)
+          index++
+          loadChild();
+        })
+      }
+    }
+    loadChild();
+  })()
+}
 
 /**
  * Checks if the line contains our desired words (just require for now)
@@ -147,12 +179,16 @@ function lineStripper(string){
   return string;
 }
 /*
-  function to remove the period before files
+  function to remove the period and slash before files
 */
-function dotRemover(string){
-  if(string.charAt(1) == "."){
+function directoryCleaner(string){
+  if(string.charAt(1) == "."){      
     var pre = string.charAt(0);
     string = pre + string.substring(2,string.length)
+    if(string.charAt(1) == "/"){      
+      var pre = string.charAt(0);
+      string = pre + string.substring(2,string.length)
+    }
   }
   return string
 }
