@@ -36,7 +36,7 @@ fileParser.prototype.fileExists = function(that){
       defer.resolve(true);
     }
     else {
-      console.log("Please enter a valid file");
+      console.log("Please enter a valid file" + filename);
       defer.reject(false);
     }
   });
@@ -74,6 +74,7 @@ fileParser.prototype.readLines = function(func){
       remaining = remaining.substring(index + 1);
       var newFile = lineParser((line));
       if(newFile)
+        newFile = dotRemover(newFile)
         localContainer[newFile] = {};
       index = remaining.indexOf('\n');
     }
@@ -82,6 +83,7 @@ fileParser.prototype.readLines = function(func){
     if (remaining.length > 0) {
       var newFile = lineParser(remaining);
       if(newFile)
+        newFile = dotRemover(newFile)
         localContainer[newFile] = {};
     }
     this.fileContainer = mailbox.container;
@@ -143,6 +145,16 @@ function lineStripper(string){
   string = regex.exec(string);
   string = string[1];
   return string;
+}
+/*
+  function to remove the period before files
+*/
+function dotRemover(string){
+  if(string.charAt(1) == "."){
+    var pre = string.charAt(0);
+    string = pre + string.substring(2,string.length)
+  }
+  return string
 }
 
 module.exports = fileParser;
