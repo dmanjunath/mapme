@@ -27,16 +27,21 @@ function fileParserMailbox(fileContainer){  //This class is used to update the f
  */
 fileParser.prototype.fileExists = function(that){
   var defer = Q.defer();
-  var filename = this.args[0];
+  var filename = removeQuotes(this.args[0]);  
   fs.exists(filename, function(exists){
     if(exists){
       var input = fs.createReadStream(filename);
       that.fileContainer["root"] = filename;
       that.input = input;
-      defer.resolve(true);
+      input.on('error',function(err){     //checking for errors with input
+        defer.reject(false);
+      });
+      input.on('readable',function(){     //resolved if the input is readable
+        defer.resolve(true);
+      }) 
     }
     else {
-      console.log("Invalid file " + filename);
+      // console.log("Invalid file " + filename);
       defer.reject(false);
     }
   });
@@ -66,6 +71,7 @@ fileParser.prototype.readLines = function(func){
   var input = this.input;
   var mailbox = new fileParserMailbox(this.fileContainer);
   var localContainer = mailbox.container;
+
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
@@ -91,6 +97,9 @@ fileParser.prototype.readLines = function(func){
     this.fileContainer = mailbox.container;
     func(this);
   });
+  input.on('error',function(err){
+    console.log(err)
+  });
 };
 
 /**
@@ -106,11 +115,13 @@ fileParser.prototype.parse = function(callback){
   })
   .then(function(){
     that.readLines(function(a){
-      var container = a.fileContainer;      
-      //Having read and updated the container, we need to recurse into the resulting nodes and add 
-      childSpawner(container);
-      results = container;
-      callback(results);
+      var container = a.fileContainer;
+      childSpawner(container,function(result,index){
+        callback(result)
+        return container
+      });
+      // results = container;
+      // callback(results);
     });
   });
 };
@@ -119,7 +130,7 @@ fileParser.prototype.parse = function(callback){
 Spawning child fileParsers for each element
 */
 function childSpawner(container,callback){
-  var staticArray = [container.length]
+  var staticArray = [container.length - 1]
   var i = 0;
   for( key in container ){
     staticArray[i] = key;
@@ -130,8 +141,6 @@ function childSpawner(container,callback){
     function loadChild(){
       if(index < staticArray.length){
         var key = staticArray[index]
-        // console.log(key)
-        // console.log(container[key])
         var parser = new fileParser([key])
         parser.fileContainer = container[key]
         parser.parse(function(result){
@@ -139,6 +148,9 @@ function childSpawner(container,callback){
           index++
           loadChild();
         })
+      }
+      else{
+        callback(container,i)
       }
     }
     loadChild();
@@ -189,6 +201,15 @@ function directoryCleaner(string){
       var pre = string.charAt(0);
       string = pre + string.substring(2,string.length)
     }
+  }
+  return string
+}
+/*
+Function to remove quotations before checking if a file exists
+*/
+function removeQuotes(string){
+  if(string.charAt(0) == "'" || string.charAt(0) == "\""){
+    string = string.substring(1,string.length - 1)
   }
   return string
 }

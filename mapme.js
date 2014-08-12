@@ -18,7 +18,8 @@ var parser = new fileParser(argv)
 parser.fileContainer = map      
 var result = parser.parse(function(result){
    //createPage(result);
-   //console.log(result)
+   console.log(result)
+   console.log("final")
 })
 
 function createPage(result){
