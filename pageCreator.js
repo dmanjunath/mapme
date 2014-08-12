@@ -3,29 +3,24 @@ pageCreator is the class that accepts the nodes from fileParser and produces the
 */
 function pageCreator(nodes){
   this.nodes = nodes;
-  this.root;
+  this.root =this.nodes['root'];
   this.doc = "";
 }
 
 pageCreator.prototype.create = function(){    //used to create the page that contains everything we need
-  this.root = this.nodes['root'];
   var fs = require('fs');
 
   this.doc += this.getHeadString();
   this.doc += this.getTreeString();
   // this.writeJSON();
-
   var writeStream = fs.createWriteStream('dependencies.html','w');
-  writeStream.write(this.doc,'UTF-8',function(error){
-  
-  });
+  writeStream.write(this.doc,'UTF-8',function(error){   });
   writeStream.end();
 }
 
 
 pageCreator.prototype.getTreeJson = function(){           //appropriately formatting the json
   var raw = this.nodes;
-
   var finalJSON = {};
   var parent = this.root;
   finalJSON.name = this.root;
@@ -34,14 +29,27 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
   for(var key in raw){
     if(key != 'root'){
       var child = {};
-      child["name"] = key;
+      child["name"] = removeQuotes(key);
       child["parent"] = parent;
-      children.push(child);
+      if(countProperties(raw[key]) > 0){
+        // console.log(key + "length:"+countProperties(raw[key]))
+        // console.log(raw[key])
+        var grandkids = new pageCreator(raw[key])
+        console.log(grandkids.root)
+        var grandJSON = grandkids.getTreeJson();
+        console.log(grandJSON)
+        child["children"] = []
+        child["children"].push(grandJSON)
+        children.push(child)
+      }
+      else{
+        children.push(child);
+      }
     }
   }
   finalJSON["children"] = children;
-  console.log(finalJSON);
-  return JSON.stringify(finalJSON,null,2);
+  // console.log(finalJSON);
+  return finalJSON;
 }
 
 
@@ -71,7 +79,7 @@ pageCreator.prototype.getHeadString = function(){         //generate the head of
 }
 
 pageCreator.prototype.getTreeString = function(){     //generate the tree of the html element
-  var json = this.getTreeJson();
+  var json = JSON.stringify(this.getTreeJson(),null,2);
 
   var script = '\
   <body>\
@@ -138,7 +146,6 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
 \n  // Declare the links…\
 \n  var link = svg.selectAll("path.link")\
 \n    .data(links, function(d) { return d.target.id; });\
-\n\
 \n  // Enter the links.\
 \n  link.enter().insert("path", "g")\
 \n    .attr("class", "link")\
@@ -150,5 +157,16 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
   ';
   return script;
 }
-
+function countProperties(obj) {
+    return Object.keys(obj).length;
+}
+/*
+Function to remove quotations before checking if a file exists
+*/
+function removeQuotes(string){
+  if(string.charAt(0) == "'" || string.charAt(0) == "\""){
+    string = string.substring(1,string.length - 1)
+  }
+  return string
+}
 module.exports = pageCreator;

@@ -13,13 +13,13 @@ function fileParser(args){
   this.args = args;
   this.numargs = args.length;
   this.fileContainer = {};
-  // this.fileCounter = 0;
+  this.depth = 0;
   this.input = "";
 }
 
-function fileParserMailbox(fileContainer){  //This class is used to update the fileContainer in a subloop below
+function fileParserMailbox(fileContainer,depth){  //This class is used to update the fileContainer in a subloop below
   this.container = fileContainer;
-  // this.counter = fileCounter;
+  this.depth = depth;
 }
 
 /**
@@ -27,7 +27,7 @@ function fileParserMailbox(fileContainer){  //This class is used to update the f
  */
 fileParser.prototype.fileExists = function(that){
   var defer = Q.defer();
-  var filename = removeQuotes(this.args[0]);  
+  var filename = removeQuotes(this.args[0]);
   fs.exists(filename, function(exists){
     if(exists){
       var input = fs.createReadStream(filename);
@@ -54,7 +54,6 @@ fileParser.prototype.fileExists = function(that){
 fileParser.prototype.argCheck = function(){
   var defer = Q.defer();
   if(this.numargs != 1){
-    console.log("Please use exactly 1 argument");
     defer.reject(false);
   }
   else{
@@ -69,7 +68,7 @@ fileParser.prototype.argCheck = function(){
 fileParser.prototype.readLines = function(func){
   var remaining = '';
   var input = this.input;
-  var mailbox = new fileParserMailbox(this.fileContainer);
+  var mailbox = new fileParserMailbox(this.fileContainer,this.depth);
   var localContainer = mailbox.container;
 
   input.on('data', function(data) {
@@ -95,6 +94,7 @@ fileParser.prototype.readLines = function(func){
       }
     }
     this.fileContainer = mailbox.container;
+    this.depth = mailbox.depth
     func(this);
   });
   input.on('error',function(err){
@@ -103,7 +103,7 @@ fileParser.prototype.readLines = function(func){
 };
 
 /**
- * function used to actually parse a page
+ * Function used to actually parse a page
  */
 fileParser.prototype.parse = function(callback){
   var results = {};
@@ -116,12 +116,10 @@ fileParser.prototype.parse = function(callback){
   .then(function(){
     that.readLines(function(a){
       var container = a.fileContainer;
-      childSpawner(container,function(result,index){
+      var depth = a.depth;
+      childSpawner(container,depth,function(result,a){
         callback(result)
-        return container
       });
-      // results = container;
-      // callback(results);
     });
   });
 };
@@ -129,28 +127,31 @@ fileParser.prototype.parse = function(callback){
 /*
 Spawning child fileParsers for each element
 */
-function childSpawner(container,callback){
+function childSpawner(container,depth,callback){
   var staticArray = [container.length - 1]
   var i = 0;
   for( key in container ){
     staticArray[i] = key;
     i++;
   }
+  var deeper = depth+1
   var index = 0;
+  var key;
   (function(){
     function loadChild(){
       if(index < staticArray.length){
-        var key = staticArray[index]
+        key = staticArray[index]
+        console.log("key: " + key + " index: " + index);
         var parser = new fileParser([key])
         parser.fileContainer = container[key]
+        parser.depth = deeper
         parser.parse(function(result){
-          // console.log(result)
-          index++
           loadChild();
         })
+        index++
       }
       else{
-        callback(container,i)
+        callback(container,deeper)
       }
     }
     loadChild();
