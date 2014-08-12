@@ -76,29 +76,38 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
   var script = '\
   <body>\
   <script>\
-  \nvar margin = {top: 20, right: 120, bottom: 20, left: 120},\
+\n  var margin = {top: 20, right: 120, bottom: 20, left: 120},\
       width = 1200 - margin.right - margin.left,\
       height = 800 - margin.top - margin.bottom;\
-  \nvar i = 0,\
+\n  var i = 0,\
       duration = 750,\
       root;\
-  \nvar tree = d3.layout.tree()\
+\n  var tree = d3.layout.tree()\
       .size([height, width]);\
-  \nvar diagonal = d3.svg.diagonal()\
-    .projection(function(d) { return [d.y, d.x]; });\
-  \nvar svg = d3.select("body").append("svg");\
-  \nsvg.attr("width", width + margin.right + margin.left);\
-  \nsvg.attr("height", height + margin.top + margin.bottom)\
-  \nsvg.append("g")\
-  \nsvg.attr("transform", "translate(" + margin.left + "," + margin.top + ")");\
-  \nroot = '+json+';\
-  \nupdate(root)\
-\n  console.log(d3.select("body").append("a"));\
+\n  var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });\
+\n  var svg = d3.select("body").append("svg");\
+\nvar svg = d3.select("body").append("svg")\
+\n    .attr("width", width + margin.right + margin.left)\
+\n    .attr("height", height + margin.top + margin.bottom)\
+\n  .append("g")\
+\n    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");\
+\n  root = '+json+';\
+\n  root.x = height;\
+\n  root.y = 0;\
+\n  update(root);\
+\n  root.children.forEach(collapse);\
+\n  function collapse(d) {\
+\n      if (d.children) {\
+\n        d._children = d.children;\
+\n        d._children.forEach(collapse);\
+\n        d.children = null;\
+\n      }\
+\n    }\
 \n  function update(source) {\
 \n  // Compute the new tree layout.\
 \n  var nodes = tree.nodes(root).reverse(),\
 \n  links = tree.links(nodes);\
-\
+\n\
 \n  // Normalize for fixed-depth.\
 \n  nodes.forEach(function(d) { d.y = d.depth * 180; });\
 \
@@ -107,10 +116,11 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
 \n    .data(nodes, function(d) { return d.id || (d.id = ++i); });\
 \
 \n  // Enter the nodes.\
-\n  var nodeEnter = node.enter().append("g")\
-\n    .attr("class", "node")\
-\n    .attr("transform", function(d) { \
-\n      return "translate(" + d.y + "," + d.x + ")"; });\
+\n  var nodeEnter = node.enter().append("g");\
+\n      console.log(nodeEnter);\
+\n      nodeEnter.attr("class", "node");\
+\n      nodeEnter.attr("transform", function(d) { \
+\n      return "translate(" + d.y + "," + (d.x) + ")"; });\
 \n\
 \n  nodeEnter.append("circle")\
 \n    .attr("r", 10)\

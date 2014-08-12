@@ -1,14 +1,19 @@
-  <style>  .node {  cursor: pointer;  }  .node circle {  fill: #fff;  stroke: steelblue;  stroke-width: 1.5px;  }  .node text {  font: 10px sans-serif;  }  .link {  fill: none;  stroke: #ccc;  stroke-width: 1.5px;  }  </style>  <script src="http://d3js.org/d3.v3.min.js"></script>    <body>  <script>
-  var margin = {top: 20, right: 120, bottom: 20, left: 120},      width = 1200 - margin.right - margin.left,      height = 800 - margin.top - margin.bottom;
+<head>
+  
+  <style>  .node {  cursor: pointer;  }  .node circle {  fill: #fff;  stroke: steelblue;  stroke-width: 1.5px;  }  .node text {  font: 10px sans-serif;  }  .link {  fill: none;  stroke: #ccc;  stroke-width: 1.5px;  }  </style>  <script src="http://d3js.org/d3.v3.min.js"></script> 
+</head>
+<body>  
+<script>
+  var margin = {top: 20, right: 120, bottom: 20, left: 120},width = 1200 - margin.right - margin.left,height = 800 - margin.top - margin.bottom;
   var i = 0,      duration = 750,      root;
-  var tree = d3.layout.tree()      .size([height, width]);
+  var tree = d3.layout.tree().size([height, width]);
   var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
-  var svg = d3.select("body").append("svg");
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  // svg.append("g")
   root = {
   "name": "testapp.js",
   "parent": "null",
@@ -93,19 +98,16 @@ var svg = d3.select("body").append("svg")
 
   // Normalize for fixed-depth.
   nodes.forEach(function(d) { d.y = d.depth * 180; });
-  // Declare the nodes…
+  // Declare the nodesâ€¦
   var node = svg.selectAll("g.node")
     .data(nodes, function(d) { return d.id || (d.id = ++i); });
   // Enter the nodes.
   var nodeEnter = node.enter().append("g");
-      console.log(nodeEnter);
       nodeEnter.attr("class", "node");
       nodeEnter.attr("transform", function(d) { 
       return "translate(" + d.y + "," + (d.x) + ")"; });
 
-  nodeEnter.append("circle")
-    .attr("r", 10)
-    .style("fill", "#fff");
+  nodeEnter.append("circle").attr("r", 10).style({"fill":"#fff"});
 
   nodeEnter.append("text")
     .attr("x", function(d) { 
@@ -116,7 +118,7 @@ var svg = d3.select("body").append("svg")
     .text(function(d) { return d.name; })
     .style("fill-opacity", 1);
 
-  // Declare the links…
+  // Declare the linksâ€¦
   var link = svg.selectAll("path.link")
     .data(links, function(d) { return d.target.id; });
 
@@ -124,4 +126,6 @@ var svg = d3.select("body").append("svg")
   link.enter().insert("path", "g")
     .attr("class", "link")
     .attr("d", diagonal);
-}  </script>  </body>  
+}
+</script> 
+</body>  
