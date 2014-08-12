@@ -141,7 +141,7 @@ function childSpawner(container,depth,callback){
     function loadChild(){
       if(index < staticArray.length){
         key = staticArray[index]
-        console.log("key: " + key + " index: " + index);
+        // console.log("key: " + key + " index: " + index);
         var parser = new fileParser([key])
         parser.fileContainer = container[key]
         parser.depth = deeper

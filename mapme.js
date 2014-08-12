@@ -28,5 +28,6 @@ var result = parser.parse(function(result){
 function createPage(result){
   var pageCreator = require('./pageCreator.js')  //pageCreator is the class that generates the D3 page
   var page = new pageCreator(result)
+  pageCreator.parent = result.root;
   page.create()
 }

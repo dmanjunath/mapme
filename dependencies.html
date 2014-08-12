@@ -11,88 +11,58 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   root = {
   "name": "testapp.js",
-  "parent": "null",
   "children": [
     {
-      "name": "express",
-      "parent": "testapp.js"
+      "name": "express"
     },
     {
       "name": "routes",
-      "parent": "testapp.js",
-      "children": [
-        {
-          "name": "routes",
-          "parent": "null",
-          "children": []
-        }
-      ]
+      "children": []
     },
     {
-      "name": "routes/api",
-      "parent": "testapp.js"
+      "name": "routes/api"
     },
     {
-      "name": "http",
-      "parent": "testapp.js"
+      "name": "http"
     },
     {
-      "name": "connect",
-      "parent": "testapp.js"
+      "name": "connect"
     },
     {
-      "name": "connect-redis",
-      "parent": "testapp.js"
+      "name": "connect-redis"
     },
     {
-      "name": "path",
-      "parent": "testapp.js"
+      "name": "path"
     },
     {
-      "name": "config/config.json",
-      "parent": "testapp.js"
+      "name": "config/config.json"
     },
     {
-      "name": "cluster",
-      "parent": "testapp.js"
+      "name": "cluster"
     },
     {
-      "name": "os",
-      "parent": "testapp.js"
+      "name": "os"
     },
     {
-      "name": "api/locations.js",
-      "parent": "testapp.js"
+      "name": "api/locations.js"
     },
     {
-      "name": "api/landlords.js",
-      "parent": "testapp.js"
+      "name": "api/landlords.js"
     },
     {
-      "name": "api/ratings.js",
-      "parent": "testapp.js"
+      "name": "api/ratings.js"
     },
     {
-      "name": "api/flagging.js",
-      "parent": "testapp.js"
+      "name": "api/flagging.js"
     },
     {
       "name": "routes/authentication.js",
-      "parent": "testapp.js",
       "children": [
         {
-          "name": "routes/authentication.js",
-          "parent": "null",
-          "children": [
-            {
-              "name": "./api/db.js",
-              "parent": "routes/authentication.js"
-            },
-            {
-              "name": "bcrypt",
-              "parent": "routes/authentication.js"
-            }
-          ]
+          "name": "./api/db.js"
+        },
+        {
+          "name": "bcrypt"
         }
       ]
     }

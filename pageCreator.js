@@ -5,6 +5,7 @@ function pageCreator(nodes){
   this.nodes = nodes;
   this.root =this.nodes['root'];
   this.doc = "";
+  this.parent;
 }
 
 pageCreator.prototype.create = function(){    //used to create the page that contains everything we need
@@ -22,25 +23,24 @@ pageCreator.prototype.create = function(){    //used to create the page that con
 pageCreator.prototype.getTreeJson = function(){           //appropriately formatting the json
   var raw = this.nodes;
   var finalJSON = {};
-  var parent = this.root;
   finalJSON.name = this.root;
-  finalJSON.parent = "null";
   var children = [];
+  
   for(var key in raw){
+    // console.log(key)
     if(key != 'root'){
       var child = {};
       child["name"] = removeQuotes(key);
-      child["parent"] = parent;
+
       if(countProperties(raw[key]) > 0){
-        // console.log(key + "length:"+countProperties(raw[key]))
-        // console.log(raw[key])
+        console.log(raw[key])
         var grandkids = new pageCreator(raw[key])
-        console.log(grandkids.root)
+        grandkids.parent = this.parent
         var grandJSON = grandkids.getTreeJson();
         console.log(grandJSON)
         child["children"] = []
         child["children"].push(grandJSON)
-        children.push(child)
+        children.push(grandJSON);
       }
       else{
         children.push(child);
@@ -48,7 +48,8 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
     }
   }
   finalJSON["children"] = children;
-  // console.log(finalJSON);
+  finalJSON["parent"] = this.parent
+  // console.log(JSON.stringify(finalJSON,null,2));
   return finalJSON;
 }
 
