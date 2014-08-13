@@ -29,19 +29,19 @@ function fileParserMailbox(fileContainer,depth){  //This class is used to update
 fileParser.prototype.fileExists = function(that){
   var defer = Q.defer();
   var filename = removeQuotes(this.args[0]);
+  // console.log(filename)
   fs.exists(filename, function(exists){
     if(exists){
       var input = fs.createReadStream(filename);
+      input.setMaxListeners(0);           //unlimited listeners
       that.fileContainer["root"] = filename;
       that.input = input;
       input.on('error',function(err){     //checking for errors with input
         console.log(err)
         defer.reject(false);
         console.log("fe_error"+filename);
-        input.close()
       });
       input.on('readable',function(){     //resolved if the input is readable
-        // console.log("fileExists: " + filename);
         // console.log("fe_"+filename);
         defer.resolve(true);
       }) 
@@ -59,9 +59,7 @@ fileParser.prototype.fileExists = function(that){
  */
 fileParser.prototype.argCheck = function(){
   var defer = Q.defer();
-
   if(this.numargs != 1){
-    
     defer.reject(false);
   }
   else{
@@ -149,26 +147,26 @@ function childSpawner(container,depth,callback){
   var deeper = depth+1
   var index = 0;
   var key;
-  staticArray.forEach(function(key){
-    index++
-    (function(k,i){
+  var funcs
+  staticArray.forEach(function(k){
+    (function(k){
       var parser = new fileParser([k])
-      console.log("pre parse:"+k)
       parser.fileContainer = container[k]
       parser.parent = k
       parser.parse(function(result){
-        console.log("post parse:" + parser.parent)
-        // console.log(k)
+        console.log("\n"+parser.parent + " results-----")
+        console.log(result)
+        console.log("\n"+"-----")
+        console.log("\n")
         if(result['root'] == k){
           container[k] = result
         }
         callback(container)
       })
-      if(i == staticArray.length){
-        callback(container)
-      }
-    })(key,index)
+    })(k)
   })
+  callback(container) 
+
 }
 
 /**
