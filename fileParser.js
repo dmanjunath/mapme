@@ -15,7 +15,7 @@ function fileParser(args){
   this.fileContainer = {};
   this.depth = 0;
   this.input = "";
-
+  this.parent = "base";
 }
 
 function fileParserMailbox(fileContainer,depth){  //This class is used to update the fileContainer in a subloop below
@@ -38,10 +38,11 @@ fileParser.prototype.fileExists = function(that){
         console.log(err)
         defer.reject(false);
         console.log("fe_error"+filename);
+        input.close()
       });
       input.on('readable',function(){     //resolved if the input is readable
         // console.log("fileExists: " + filename);
-        console.log("fe_"+filename);
+        // console.log("fe_"+filename);
         defer.resolve(true);
       }) 
     }
@@ -78,6 +79,7 @@ fileParser.prototype.readLines = function(func){
   var mailbox = new fileParserMailbox(this.fileContainer,this.depth);
   var localContainer = mailbox.container;
   var beingRead = this.args[0];
+  var p = this.parent;
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
@@ -104,6 +106,7 @@ fileParser.prototype.readLines = function(func){
       }
     }
     this.fileContainer = mailbox.container;
+    //console.log(p)
     this.depth = mailbox.depth
     func(this);
   });
@@ -120,7 +123,6 @@ fileParser.prototype.parse = function(callback){
   that = this;
   this.argCheck()
   .then(function(){
-    callback(results)
     return that.fileExists(that);
   })
   .then(function(){
@@ -151,9 +153,16 @@ function childSpawner(container,depth,callback){
     index++
     (function(k,i){
       var parser = new fileParser([k])
+      console.log("pre parse:"+k)
       parser.fileContainer = container[k]
+      parser.parent = k
       parser.parse(function(result){
-
+        console.log("post parse:" + parser.parent)
+        // console.log(k)
+        if(result['root'] == k){
+          container[k] = result
+        }
+        callback(container)
       })
       if(i == staticArray.length){
         callback(container)

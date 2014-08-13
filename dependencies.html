@@ -55,7 +55,15 @@ var svg = d3.select("body").append("svg")
       "name": "api/flagging.js"
     },
     {
-      "name": "routes/authentication.js"
+      "name": "routes/authentication.js",
+      "children": [
+        {
+          "name": "./api/db.js"
+        },
+        {
+          "name": "bcrypt"
+        }
+      ]
     }
   ]
 };
