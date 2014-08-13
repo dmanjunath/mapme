@@ -121,14 +121,13 @@ fileParser.prototype.parse = function(callback){
   this.argCheck()
   .then(function(){
     callback(results)
-    // console.log(JSON.stringify(that.fileExists(that)))
     return that.fileExists(that);
   })
   .then(function(){
     that.readLines(function(a){
       var container = a.fileContainer;
       var depth = a.depth;
-      childSpawner(container,depth,function(result,a){
+      childSpawner(container,depth,function(result){
         callback(result)
       });
     });
@@ -139,7 +138,7 @@ fileParser.prototype.parse = function(callback){
 Spawning child fileParsers for each element
 */
 function childSpawner(container,depth,callback){
-  var staticArray = [container.length - 1]
+  var staticArray = [container.length]
   var i = 0;
   for( key in container ){
     staticArray[i] = key;
@@ -148,25 +147,19 @@ function childSpawner(container,depth,callback){
   var deeper = depth+1
   var index = 0;
   var key;
-  (function(){
-    function loadChild(){
-      if(index < staticArray.length){
-        key = staticArray[index]
-        // console.log("key: " + key + " index: " + index);
-        var parser = new fileParser([key])
-        parser.fileContainer = container[key]
-        parser.depth = deeper
-        parser.parse(function(result){
-          loadChild();
-        })
-        index++
+  staticArray.forEach(function(key){
+    index++
+    (function(k,i){
+      var parser = new fileParser([k])
+      parser.fileContainer = container[k]
+      parser.parse(function(result){
+
+      })
+      if(i == staticArray.length){
+        callback(container)
       }
-      else{
-        callback(container,deeper)
-      }
-    }
-    loadChild();
-  })()
+    })(key,index)
+  })
 }
 
 /**
