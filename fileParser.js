@@ -15,6 +15,7 @@ function fileParser(args){
   this.fileContainer = {};
   this.depth = 0;
   this.input = "";
+
 }
 
 function fileParserMailbox(fileContainer,depth){  //This class is used to update the fileContainer in a subloop below
@@ -34,9 +35,13 @@ fileParser.prototype.fileExists = function(that){
       that.fileContainer["root"] = filename;
       that.input = input;
       input.on('error',function(err){     //checking for errors with input
+        console.log(err)
         defer.reject(false);
+        console.log("fe_error"+filename);
       });
       input.on('readable',function(){     //resolved if the input is readable
+        // console.log("fileExists: " + filename);
+        console.log("fe_"+filename);
         defer.resolve(true);
       }) 
     }
@@ -53,7 +58,9 @@ fileParser.prototype.fileExists = function(that){
  */
 fileParser.prototype.argCheck = function(){
   var defer = Q.defer();
+
   if(this.numargs != 1){
+    
     defer.reject(false);
   }
   else{
@@ -70,14 +77,17 @@ fileParser.prototype.readLines = function(func){
   var input = this.input;
   var mailbox = new fileParserMailbox(this.fileContainer,this.depth);
   var localContainer = mailbox.container;
-
+  var beingRead = this.args[0];
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
     while (index > -1) {
       var line = remaining.substring(0, index);
       remaining = remaining.substring(index + 1);
-      var newFile = lineParser((line));
+      var newFile = lineParser(line);
+      if(beingRead == "api/locations.js"){
+        console.log(newFile);
+      }
       if(newFile){
         newFile = directoryCleaner(newFile)
         localContainer[newFile] = {};
@@ -111,6 +121,7 @@ fileParser.prototype.parse = function(callback){
   this.argCheck()
   .then(function(){
     callback(results)
+    // console.log(JSON.stringify(that.fileExists(that)))
     return that.fileExists(that);
   })
   .then(function(){

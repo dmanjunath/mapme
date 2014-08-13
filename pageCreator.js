@@ -33,11 +33,11 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
       child["name"] = removeQuotes(key);
 
       if(countProperties(raw[key]) > 0){
-        console.log(raw[key])
+        // console.log(raw[key])
         var grandkids = new pageCreator(raw[key])
         grandkids.parent = this.parent
         var grandJSON = grandkids.getTreeJson();
-        console.log(grandJSON)
+        // console.log(grandJSON)
         child["children"] = []
         child["children"].push(grandJSON)
         children.push(grandJSON);
