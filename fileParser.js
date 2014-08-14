@@ -18,36 +18,32 @@ function fileParser(args){
   this.parent = "base";
 }
 
-function fileParserMailbox(fileContainer,depth){  //This class is used to update the fileContainer in a subloop below
-  this.container = fileContainer;
-  this.depth = depth;
-}
-
 /**
  * essentially used to check if the filename actually exists as a file
  */
-fileParser.prototype.fileExists = function(that){
+fileParser.prototype.fileExists = function(){
   var defer = Q.defer();
   var filename = removeQuotes(this.args[0]);
-  // console.log(filename)
+  var parser = this
   fs.exists(filename, function(exists){
     if(exists){
       var input = fs.createReadStream(filename);
       input.setMaxListeners(0);           //unlimited listeners
-      that.fileContainer["root"] = filename;
-      that.input = input;
+      parser.fileContainer["root"] = filename;
+      parser.input = input;
       input.on('error',function(err){     //checking for errors with input
         console.log(err)
         defer.reject(false);
-        console.log("fe_error"+filename);
+        input.close()
+        // console.log("fe_error"+filename);
       });
       input.on('readable',function(){     //resolved if the input is readable
         // console.log("fe_"+filename);
+        input.close()
         defer.resolve(true);
       }) 
     }
     else {
-      // console.log("Invalid file " + filename);
       defer.reject(false);
     }
   });
@@ -74,10 +70,11 @@ fileParser.prototype.argCheck = function(){
 fileParser.prototype.readLines = function(func){
   var remaining = '';
   var input = this.input;
-  var mailbox = new fileParserMailbox(this.fileContainer,this.depth);
-  var localContainer = mailbox.container;
   var beingRead = this.args[0];
-  var p = this.parent;
+
+  var parser = this;
+  var localContainer = this.fileContainer;
+  var input = fs.createReadStream(beingRead);
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
@@ -85,9 +82,6 @@ fileParser.prototype.readLines = function(func){
       var line = remaining.substring(0, index);
       remaining = remaining.substring(index + 1);
       var newFile = lineParser(line);
-      if(beingRead == "api/locations.js"){
-        console.log(newFile);
-      }
       if(newFile){
         newFile = directoryCleaner(newFile)
         localContainer[newFile] = {};
@@ -103,13 +97,10 @@ fileParser.prototype.readLines = function(func){
         localContainer[newFile] = {};
       }
     }
-    this.fileContainer = mailbox.container;
-    //console.log(p)
-    this.depth = mailbox.depth
-    func(this);
+    func(parser);
   });
   input.on('error',function(err){
-    console.log(err)
+    // console.log(err)
   });
 };
 
@@ -118,55 +109,53 @@ fileParser.prototype.readLines = function(func){
  */
 fileParser.prototype.parse = function(callback){
   var results = {};
+  var b = this.parent
+  var parser = this
   that = this;
-  this.argCheck()
-  .then(function(){
-    return that.fileExists(that);
-  })
-  .then(function(){
-    that.readLines(function(a){
-      var container = a.fileContainer;
-      var depth = a.depth;
-      childSpawner(container,depth,function(result){
-        callback(result)
-      });
-    });
-  });
+  if(this.argCheck()){
+    if(this.fileExists()){
+      this.readLines(function(parser){
+        var container = parser.fileContainer
+        callback(container)
+        childSpawner(container,callback);
+      })
+    }
+  }
 };
 
 /*
 Spawning child fileParsers for each element
 */
-function childSpawner(container,depth,callback){
+function childSpawner(container,callback){
   var staticArray = [container.length]
   var i = 0;
   for( key in container ){
     staticArray[i] = key;
     i++;
   }
-  var deeper = depth+1
   var index = 0;
   var key;
   var funcs
   staticArray.forEach(function(k){
-    (function(k){
+    (function(k,callback){
       var parser = new fileParser([k])
       parser.fileContainer = container[k]
       parser.parent = k
       parser.parse(function(result){
-        console.log("\n"+parser.parent + " results-----")
-        console.log(result)
-        console.log("\n"+"-----")
-        console.log("\n")
+        // console.log("\n"+parser.parent + " results for " + k + "-----")
+        // console.log(result)
+        // console.log(result['root'])
+        // console.log("\n"+"-----")
+        // console.log("\n")
         if(result['root'] == k){
           container[k] = result
+          // console.log(container)
+          callback(container)
         }
-        callback(container)
       })
-    })(k)
+      callback(container)
+    })(k,callback)
   })
-  callback(container) 
-
 }
 
 /**
@@ -214,7 +203,7 @@ function directoryCleaner(string){
       string = pre + string.substring(2,string.length)
     }
   }
-  return string
+  return removeQuotes(string)
 }
 /*
 Function to remove quotations before checking if a file exists
@@ -224,6 +213,10 @@ function removeQuotes(string){
     string = string.substring(1,string.length - 1)
   }
   return string
+}
+
+function length( object ) {
+    return Object.keys(object).length;
 }
 
 module.exports = fileParser;

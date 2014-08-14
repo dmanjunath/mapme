@@ -19,8 +19,8 @@ parser.fileContainer = map
 parser.depth = 0
 var a = 0;      
 var result = parser.parse(function(result){
-   createPage(result);
-   // console.log(result);
+   // createPage(result);
+   console.log(result);
    a++
 })
 

@@ -1,4 +1,4 @@
-var db = require('../api/db.js');
+var db = require('./api/db.js');
 var flaggedPosts = db.import(__dirname+'/../models/flagged_posts.js');
 var Ratings = db.import(__dirname+'/../models/ratings.js');
 
