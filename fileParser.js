@@ -1,6 +1,7 @@
 var fs = require('fs');
 var Q = require('q');
-
+var requireRegex = /require\(['"]([^'"]*)['"]\)/i;
+var streamRegex = /.\/([a-zA-Z\/]*.js)/;
 /*
 
 fileParser.js
@@ -22,7 +23,7 @@ function fileParser(args){
  */
 fileParser.prototype.fileExists = function(){
   var defer = Q.defer();
-  var filename = removeQuotes(this.args[0]);
+  var filename = this.args[0];
   var parser = this
   fs.exists(filename, function(exists){
     if(exists){
@@ -71,7 +72,8 @@ fileParser.prototype.readLines = function(func){
   var input = this.input;
   var parser = this;
   var localContainer = this.fileContainer;
-  var input = fs.createReadStream(this.args[0]);
+  var streamlocation = directoryCleaner(this.args[0])
+  var input = fs.createReadStream(streamlocation);
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
@@ -80,7 +82,7 @@ fileParser.prototype.readLines = function(func){
       remaining = remaining.substring(index + 1);
       var newFile = lineParser(line);
       if(newFile){
-        newFile = directoryCleaner(newFile)
+        newFile = newFile
         localContainer[newFile] = {};
       }
       index = remaining.indexOf('\n');
@@ -90,7 +92,7 @@ fileParser.prototype.readLines = function(func){
     if (remaining.length > 0) {
       var newFile = lineParser(remaining);
       if(newFile){
-        newFile = directoryCleaner(newFile)
+        newFile = newFile
         localContainer[newFile] = {};
       }
     }
@@ -140,10 +142,9 @@ function childSpawner(container,callback){
  * Checks if the line contains our desired words (just require for now)
  */
 lineParser = function(data){
-  if(contains(data,"require")){
-    var rawfile = data.split("require")[1];
-    var file = lineStripper(rawfile);
-    return file;
+  var a = requireRegex.exec(data)
+  if(a){
+    return a[1]
   }
   else{
     return null;
@@ -173,24 +174,21 @@ function lineStripper(string){
   function to remove the period and slash before files
 */
 function directoryCleaner(string){
-  if(string.charAt(1) == "."){      
-    var pre = string.charAt(0);
-    string = pre + string.substring(2,string.length)
-    if(string.charAt(1) == "/"){      
-      var pre = string.charAt(0);
-      string = pre + string.substring(2,string.length)
-    }
-  }
-  return removeQuotes(string)
-}
-/*
-Function to remove quotations before checking if a file exists
-*/
-function removeQuotes(string){
-  if(string.charAt(0) == "'" || string.charAt(0) == "\""){
-    string = string.substring(1,string.length - 1)
+  var a = streamRegex.exec(string)
+  if(a){
+    string = a[1]
   }
   return string
+  // if(string.charAt(1) == "."){      
+  //   var pre = string.charAt(0);
+  //   string = pre + string.substring(2,string.length)
+  //   if(string.charAt(1) == "/"){      
+  //     var pre = string.charAt(0);
+  //     string = pre + string.substring(2,string.length)
+  //     // console.log(string)
+  //   }
+  // }
+
 }
 
 module.exports = fileParser;

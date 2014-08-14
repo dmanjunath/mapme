@@ -19,7 +19,8 @@ parser.fileContainer = map
 
 var a = 0
 var result = parser.parse(function(result){
-   console.log("Generating..."+a)
+   // console.log("Generating..."+a)
+   // console.log(result)
    a++
    createPage(result);
 })

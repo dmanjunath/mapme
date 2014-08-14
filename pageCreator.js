@@ -25,19 +25,19 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
   var finalJSON = {};
   finalJSON.name = this.root;
   var children = [];
-  
+  var a = false
+  if(this.root == "./api/locations.js"){
+    a = true
+  }
   for(var key in raw){
-    // console.log(key)
     if(key != 'root'){
       var child = {};
-      child["name"] = removeQuotes(key);
-
+      child["name"] = key;
       if(countProperties(raw[key]) > 0){
-        // console.log(raw[key])
         var grandkids = new pageCreator(raw[key])
         grandkids.parent = this.parent
         var grandJSON = grandkids.getTreeJson();
-        // console.log(grandJSON)
+        grandJSON["name"] = key
         child["children"] = []
         child["children"].push(grandJSON)
         children.push(grandJSON);
@@ -49,7 +49,6 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
   }
   finalJSON["children"] = children;
   finalJSON["parent"] = this.parent
-  // console.log(JSON.stringify(finalJSON,null,2));
   return finalJSON;
 }
 

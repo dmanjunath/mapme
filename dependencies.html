@@ -16,11 +16,11 @@ var svg = d3.select("body").append("svg")
       "name": "express"
     },
     {
-      "name": "routes",
+      "name": "./routes",
       "children": []
     },
     {
-      "name": "routes/api"
+      "name": "./routes/api"
     },
     {
       "name": "http"
@@ -35,7 +35,7 @@ var svg = d3.select("body").append("svg")
       "name": "path"
     },
     {
-      "name": "config/config.json"
+      "name": "./config/config.json"
     },
     {
       "name": "cluster"
@@ -44,16 +44,16 @@ var svg = d3.select("body").append("svg")
       "name": "os"
     },
     {
-      "name": "api/locations.js",
+      "name": "./api/locations.js",
       "children": [
         {
-          "name": "./api/db.js",
+          "name": "../api/db.js",
           "children": [
             {
               "name": "sequelize"
             },
             {
-              "name": "./config.js"
+              "name": "../config.js"
             }
           ]
         },
@@ -61,21 +61,21 @@ var svg = d3.select("body").append("svg")
           "name": "cities"
         },
         {
-          "name": "./lib/elasticsearch.js"
+          "name": "../lib/elasticsearch.js"
         }
       ]
     },
     {
-      "name": "api/landlords.js",
+      "name": "./api/landlords.js",
       "children": [
         {
-          "name": "./api/db.js",
+          "name": "../api/db.js",
           "children": [
             {
               "name": "sequelize"
             },
             {
-              "name": "./config.js"
+              "name": "../config.js"
             }
           ]
         },
@@ -83,21 +83,21 @@ var svg = d3.select("body").append("svg")
           "name": "lodash"
         },
         {
-          "name": "./lib/elasticsearch.js"
+          "name": "../lib/elasticsearch.js"
         }
       ]
     },
     {
-      "name": "api/ratings.js",
+      "name": "./api/ratings.js",
       "children": [
         {
-          "name": "./api/db.js",
+          "name": "../api/db.js",
           "children": [
             {
               "name": "sequelize"
             },
             {
-              "name": "./config.js"
+              "name": "../config.js"
             }
           ]
         },
@@ -105,28 +105,12 @@ var svg = d3.select("body").append("svg")
           "name": "lodash"
         },
         {
-          "name": "./lib/elasticsearch.js"
+          "name": "../lib/elasticsearch.js"
         }
       ]
     },
     {
-      "name": "api/flagging.js",
-      "children": [
-        {
-          "name": "api/db.js",
-          "children": [
-            {
-              "name": "sequelize"
-            },
-            {
-              "name": "./config.js"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "routes/authentication.js",
+      "name": "./api/flagging.js",
       "children": [
         {
           "name": "./api/db.js",
@@ -135,7 +119,23 @@ var svg = d3.select("body").append("svg")
               "name": "sequelize"
             },
             {
-              "name": "./config.js"
+              "name": "../config.js"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "./routes/authentication.js",
+      "children": [
+        {
+          "name": "../api/db.js",
+          "children": [
+            {
+              "name": "sequelize"
+            },
+            {
+              "name": "../config.js"
             }
           ]
         },
