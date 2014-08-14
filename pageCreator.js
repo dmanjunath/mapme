@@ -84,16 +84,19 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
   var script = '\
   <body>\
   <script>\
-\n  var margin = {top: 20, right: 120, bottom: 20, left: 120},\
+  var size = {\
+    width: window.innerWidth || document.body.clientWidth,\
+    height: window.innerHeight || document.body.clientHeight\
+  }\
+\n  var margin = {top: 0, right: 120, bottom: 0, left: 120},\
       width = 1200 - margin.right - margin.left,\
-      height = 800 - margin.top - margin.bottom;\
+      height = size.height - margin.top - margin.bottom;\
 \n  var i = 0,\
       duration = 750,\
       root;\
 \n  var tree = d3.layout.tree()\
-      .size([height, width]);\
+      .size([size.height, width]);\
 \n  var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });\
-\n  var svg = d3.select("body").append("svg");\
 \nvar svg = d3.select("body").append("svg")\
 \n    .attr("width", width + margin.right + margin.left)\
 \n    .attr("height", height + margin.top + margin.bottom)\
@@ -115,7 +118,7 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
 \n  \
 \n  function update(source) {\
 \n  // Compute the new tree layout.\
-\n  var nodes = tree.nodes(root).reverse(),\
+\n  var nodes = tree.nodes(root),\
 \n  links = tree.links(nodes);\
 \n\
 \n  // Normalize for fixed-depth.\
@@ -189,10 +192,6 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
 \n    d.y0 = d.y;\
 \n  });\
 \n}\
-\n  nodes.forEach(function(d) {\
-\n    d.x0 = d.x;\
-\n    d.y0 = d.y;\
-\n  });\
 \n// Toggle children on click.\
 \n function click(d) {\
 \n  if (d.children) {\
