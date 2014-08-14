@@ -27,7 +27,7 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
   var children = [];
   var a = false
   if(this.root == "./api/locations.js"){
-    a = true
+    a = true   
   }
   for(var key in raw){
     if(key != 'root'){
