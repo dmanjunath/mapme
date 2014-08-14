@@ -13,7 +13,6 @@ function fileParser(args){
   this.args = args;
   this.numargs = args.length;
   this.fileContainer = {};
-  this.depth = 0;
   this.input = "";
   this.parent = "base";
 }
@@ -70,11 +69,9 @@ fileParser.prototype.argCheck = function(){
 fileParser.prototype.readLines = function(func){
   var remaining = '';
   var input = this.input;
-  var beingRead = this.args[0];
-
   var parser = this;
   var localContainer = this.fileContainer;
-  var input = fs.createReadStream(beingRead);
+  var input = fs.createReadStream(this.args[0]);
   input.on('data', function(data) {
     remaining += data;
     var index = remaining.indexOf('\n');
@@ -100,7 +97,7 @@ fileParser.prototype.readLines = function(func){
     func(parser);
   });
   input.on('error',function(err){
-    // console.log(err)
+
   });
 };
 
@@ -112,12 +109,11 @@ fileParser.prototype.parse = function(callback){
   var b = this.parent
   var parser = this
   that = this;
-  if(this.argCheck()){
-    if(this.fileExists()){
-      this.readLines(function(parser){
+  if(this.argCheck()){                    //checking arguments
+    if(this.fileExists()){                //checking if file exists
+      this.readLines(function(parser){    //reading lines, returns parser object
         var container = parser.fileContainer
-        callback(container)
-        childSpawner(container,callback);
+        childSpawner(container,callback); //spawning children to read
       })
     }
   }
@@ -127,35 +123,17 @@ fileParser.prototype.parse = function(callback){
 Spawning child fileParsers for each element
 */
 function childSpawner(container,callback){
-  var staticArray = [container.length]
-  var i = 0;
   for( key in container ){
-    staticArray[i] = key;
-    i++;
-  }
-  var index = 0;
-  var key;
-  var funcs
-  staticArray.forEach(function(k){
     (function(k,callback){
       var parser = new fileParser([k])
       parser.fileContainer = container[k]
-      parser.parent = k
       parser.parse(function(result){
-        // console.log("\n"+parser.parent + " results for " + k + "-----")
-        // console.log(result)
-        // console.log(result['root'])
-        // console.log("\n"+"-----")
-        // console.log("\n")
-        if(result['root'] == k){
-          container[k] = result
-          // console.log(container)
-          callback(container)
-        }
+        container[k] = result
+        callback(container)
       })
-      callback(container)
-    })(k,callback)
-  })
+    })(key,callback)
+  }
+  callback(container)         //default callback
 }
 
 /**
@@ -213,10 +191,6 @@ function removeQuotes(string){
     string = string.substring(1,string.length - 1)
   }
   return string
-}
-
-function length( object ) {
-    return Object.keys(object).length;
 }
 
 module.exports = fileParser;

@@ -16,12 +16,12 @@ var argv = argArray['_']
 var map = {}
 var parser = new fileParser(argv)
 parser.fileContainer = map
-parser.depth = 0
-var a = 0;      
+
+var a = 0
 var result = parser.parse(function(result){
-   // createPage(result);
-   console.log(result);
+   console.log("Generating..."+a)
    a++
+   createPage(result);
 })
 
 function createPage(result){
