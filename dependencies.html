@@ -157,7 +157,7 @@ var svg = d3.select("body").append("svg")
         d.children = null;
       }
     }
-  root.children.forEach(collapse);
+  root.children.forEach(function(d){collapse(d);update(d)});
   
   function update(source) {
   // Compute the new tree layout.
@@ -233,6 +233,10 @@ var svg = d3.select("body").append("svg")
     d.y0 = d.y;
   });
 }
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
 // Toggle children on click.
  function click(d) {
   if (d.children) {

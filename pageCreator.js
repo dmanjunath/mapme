@@ -111,7 +111,7 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
 \n        d.children = null;\
 \n      }\
 \n    }\
-\n  root.children.forEach(collapse);\
+\n  root.children.forEach(function(d){collapse(d);update(d)});\
 \n  \
 \n  function update(source) {\
 \n  // Compute the new tree layout.\
@@ -189,6 +189,10 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
 \n    d.y0 = d.y;\
 \n  });\
 \n}\
+\n  nodes.forEach(function(d) {\
+\n    d.x0 = d.x;\
+\n    d.y0 = d.y;\
+\n  });\
 \n// Toggle children on click.\
 \n function click(d) {\
 \n  if (d.children) {\
