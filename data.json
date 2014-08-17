@@ -1,0 +1,129 @@
+{
+  "id": "testapp.js",
+  "childs": {
+    "express": {
+      "id": "express",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "routes": {
+      "id": "routes",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "routes/api": {
+      "id": "routes/api",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "http": {
+      "id": "http",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "connect": {
+      "id": "connect",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "connect-redis": {
+      "id": "connect-redis",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "path": {
+      "id": "path",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "config/config.json": {
+      "id": "config/config.json",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "cluster": {
+      "id": "cluster",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "os": {
+      "id": "os",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "api/locations.js": {
+      "id": "api/locations.js",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "api/landlords.js": {
+      "id": "api/landlords.js",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "api/ratings.js": {
+      "id": "api/ratings.js",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "api/flagging.js": {
+      "id": "api/flagging.js",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    },
+    "routes/authentication.js": {
+      "id": "routes/authentication.js",
+      "childs": {},
+      "childIdsList": [],
+      "parent": "testapp.js",
+      "data": {}
+    }
+  },
+  "childIdsList": [
+    "express",
+    "routes",
+    "routes/api",
+    "http",
+    "connect",
+    "connect-redis",
+    "path",
+    "config/config.json",
+    "cluster",
+    "os",
+    "api/locations.js",
+    "api/landlords.js",
+    "api/ratings.js",
+    "api/flagging.js",
+    "routes/authentication.js"
+  ],
+  "parent": null,
+  "data": {}
+}

@@ -17,8 +17,9 @@
   },
   "homepage": "https://github.com/dmanjunath/mapme",
   "dependencies": {
-    "optimist": "~0.6.1",
     "open": "0.0.5",
+    "optimist": "~0.6.1",
+    "q": "^1.0.1",
     "tree-node": "~0.2.0"
   }
 }
