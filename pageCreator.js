@@ -1,3 +1,4 @@
+/*jslint multistr:true*/
 /*
 pageCreator is the class that accepts the nodes from fileParser and produces the appropriate D3 graph page
 */
@@ -17,7 +18,7 @@ pageCreator.prototype.create = function(){    //used to create the page that con
   var writeStream = fs.createWriteStream('dependencies.html','w');
   writeStream.write(this.doc,'UTF-8',function(error){   });
   writeStream.end();
-}
+};
 
 
 pageCreator.prototype.getTreeJson = function(){           //appropriately formatting the json
@@ -25,21 +26,21 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
   var finalJSON = {};
   finalJSON.name = this.root;
   var children = [];
-  var a = false
+  var a = false;
   if(this.root == "./api/locations.js"){
-    a = true   
+    a = true;
   }
   for(var key in raw){
     if(key != 'root'){
       var child = {};
       child["name"] = key;
       if(countProperties(raw[key]) > 0){
-        var grandkids = new pageCreator(raw[key])
-        grandkids.parent = this.parent
+        var grandkids = new pageCreator(raw[key]);
+        grandkids.parent = this.parent;
         var grandJSON = grandkids.getTreeJson();
-        grandJSON["name"] = key
-        child["children"] = []
-        child["children"].push(grandJSON)
+        grandJSON["name"] = key;
+        child["children"] = [];
+        child["children"].push(grandJSON);
         children.push(grandJSON);
       }
       else{
@@ -48,9 +49,9 @@ pageCreator.prototype.getTreeJson = function(){           //appropriately format
     }
   }
   finalJSON["children"] = children;
-  finalJSON["parent"] = this.parent
+  finalJSON["parent"] = this.parent;
   return finalJSON;
-}
+};
 
 
 pageCreator.prototype.getHeadString = function(){         //generate the head of the html element
@@ -76,7 +77,7 @@ pageCreator.prototype.getHeadString = function(){         //generate the head of
   <script src="http://d3js.org/d3.v3.min.js"></script>\
   ';
   return head;
-}
+};
 
 pageCreator.prototype.getTreeString = function(){     //generate the tree of the html element
   var json = JSON.stringify(this.getTreeJson(),null,2);
@@ -207,17 +208,19 @@ pageCreator.prototype.getTreeString = function(){     //generate the tree of the
   </body>\
   ';
   return script;
-}
+};
+
 function countProperties(obj) {
     return Object.keys(obj).length;
 }
+
 /*
 Function to remove quotations before checking if a file exists
 */
 function removeQuotes(string){
   if(string.charAt(0) == "'" || string.charAt(0) == "\""){
-    string = string.substring(1,string.length - 1)
+    string = string.substring(1,string.length - 1);
   }
-  return string
+  return string;
 }
 module.exports = pageCreator;

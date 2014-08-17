@@ -24,7 +24,7 @@ function fileParser(args){
 fileParser.prototype.fileExists = function(){
   var defer = Q.defer();
   var filename = this.args[0];
-  var parser = this
+  var parser = this;
   fs.exists(filename, function(exists){
     if(exists){
       var input = fs.createReadStream(filename);
@@ -32,16 +32,16 @@ fileParser.prototype.fileExists = function(){
       parser.fileContainer["root"] = filename;
       parser.input = input;
       input.on('error',function(err){     //checking for errors with input
-        console.log(err)
+        console.log(err);
         defer.reject(false);
-        input.close()
+        input.close();
         // console.log("fe_error"+filename);
       });
       input.on('readable',function(){     //resolved if the input is readable
         // console.log("fe_"+filename);
-        input.close()
+        input.close();
         defer.resolve(true);
-      }) 
+      });
     }
     else {
       defer.reject(false);
@@ -69,10 +69,10 @@ fileParser.prototype.argCheck = function(){
  */
 fileParser.prototype.readLines = function(func){
   var remaining = '';
-  var input = this.input;
+  // var input = this.input;
   var parser = this;
   var localContainer = this.fileContainer;
-  var streamlocation = directoryCleaner(this.args[0])
+  var streamlocation = directoryCleaner(this.args[0]);
   var input = fs.createReadStream(streamlocation);
   input.on('data', function(data) {
     remaining += data;
@@ -82,7 +82,7 @@ fileParser.prototype.readLines = function(func){
       remaining = remaining.substring(index + 1);
       var newFile = lineParser(line);
       if(newFile){
-        newFile = newFile
+        newFile = newFile;
         localContainer[newFile] = {};
       }
       index = remaining.indexOf('\n');
@@ -92,7 +92,7 @@ fileParser.prototype.readLines = function(func){
     if (remaining.length > 0) {
       var newFile = lineParser(remaining);
       if(newFile){
-        newFile = newFile
+        newFile = newFile;
         localContainer[newFile] = {};
       }
     }
@@ -108,15 +108,15 @@ fileParser.prototype.readLines = function(func){
  */
 fileParser.prototype.parse = function(callback){
   var results = {};
-  var b = this.parent
-  var parser = this
+  var b = this.parent;
+  var parser = this;
   that = this;
   if(this.argCheck()){                    //checking arguments
     if(this.fileExists()){                //checking if file exists
       this.readLines(function(parser){    //reading lines, returns parser object
-        var container = parser.fileContainer
+        var container = parser.fileContainer;
         childSpawner(container,callback); //spawning children to read
-      })
+      });
     }
   }
 };
@@ -127,24 +127,24 @@ Spawning child fileParsers for each element
 function childSpawner(container,callback){
   for( key in container ){
     (function(k,callback){
-      var parser = new fileParser([k])
-      parser.fileContainer = container[k]
+      var parser = new fileParser([k]);
+      parser.fileContainer = container[k];
       parser.parse(function(result){
-        container[k] = result
-        callback(container)
-      })
-    })(key,callback)
+        container[k] = result;
+        callback(container);
+      });
+    })(key,callback);
   }
-  callback(container)         //default callback
+  callback(container);         //default callback
 }
 
 /**
  * Checks if the line contains our desired words (just require for now)
  */
 lineParser = function(data){
-  var a = requireRegex.exec(data)
+  var a = requireRegex.exec(data);
   if(a){
-    return a[1]
+    return a[1];
   }
   else{
     return null;
@@ -174,11 +174,11 @@ function lineStripper(string){
   function to remove the period and slash before files
 */
 function directoryCleaner(string){
-  var a = streamRegex.exec(string)
+  var a = streamRegex.exec(string);
   if(a){
-    string = a[1]
+    string = a[1];
   }
-  return string
+  return string;
   // if(string.charAt(1) == "."){      
   //   var pre = string.charAt(0);
   //   string = pre + string.substring(2,string.length)
