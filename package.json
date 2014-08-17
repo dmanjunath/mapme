@@ -1,0 +1,24 @@
+{
+  "name": "mapme",
+  "version": "0.0.0",
+  "description": "",
+  "main": "mapme.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dmanjunath/mapme.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/dmanjunath/mapme/issues"
+  },
+  "homepage": "https://github.com/dmanjunath/mapme",
+  "dependencies": {
+    "optimist": "~0.6.1",
+    "open": "0.0.5",
+    "tree-node": "~0.2.0"
+  }
+}
