@@ -1,0 +1,253 @@
+  <style>  .node {  cursor: pointer;  }  .node circle {  fill: #fff;  stroke: steelblue;  stroke-width: 1.5px;  }  .node text {  font: 10px sans-serif;  }  .link {  fill: none;  stroke: #ccc;  stroke-width: 1.5px;  }  </style>  <script src="http://d3js.org/d3.v3.min.js"></script>    <body>  <script>  var size = {    width: window.innerWidth || document.body.clientWidth,    height: window.innerHeight || document.body.clientHeight  }
+  var margin = {top: 0, right: 120, bottom: 0, left: 120},      width = 1200 - margin.right - margin.left,      height = size.height - margin.top - margin.bottom;
+  var i = 0,      duration = 750,      root;
+  var tree = d3.layout.tree()      .size([size.height, width]);
+  var diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.right + margin.left)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  root = {
+  "name": "testapp.js",
+  "children": [
+    {
+      "name": "express",
+      "children": []
+    },
+    {
+      "name": "routes",
+      "children": []
+    },
+    {
+      "name": "routes/api",
+      "children": []
+    },
+    {
+      "name": "http",
+      "children": []
+    },
+    {
+      "name": "connect",
+      "children": []
+    },
+    {
+      "name": "connect-redis",
+      "children": []
+    },
+    {
+      "name": "path",
+      "children": []
+    },
+    {
+      "name": "config/config.json",
+      "children": []
+    },
+    {
+      "name": "cluster",
+      "children": []
+    },
+    {
+      "name": "os",
+      "children": []
+    },
+    {
+      "name": "api/locations.js",
+      "children": [
+        {
+          "name": "../api/db.js",
+          "children": [
+            {
+              "name": "sequelize",
+              "children": []
+            },
+            {
+              "name": "../config.js",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "cities",
+          "children": []
+        },
+        {
+          "name": "../lib/elasticsearch.js",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "api/landlords.js",
+      "children": [
+        {
+          "name": "../api/db.js",
+          "children": [
+            {
+              "name": "sequelize",
+              "children": []
+            },
+            {
+              "name": "../config.js",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "lodash",
+          "children": []
+        },
+        {
+          "name": "../lib/elasticsearch.js",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "api/ratings.js",
+      "children": [
+        {
+          "name": "../api/db.js",
+          "children": [
+            {
+              "name": "sequelize",
+              "children": []
+            },
+            {
+              "name": "../config.js",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "lodash",
+          "children": []
+        },
+        {
+          "name": "../lib/elasticsearch.js",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "api/flagging.js",
+      "children": [
+        {
+          "name": "../api/db.js",
+          "children": [
+            {
+              "name": "sequelize",
+              "children": []
+            },
+            {
+              "name": "../config.js",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "routes/authentication.js",
+      "children": []
+    }
+  ]
+};
+  root.x0 = height / 2;
+  root.y0 = 0; 
+  update(root);
+  function collapse(d) {
+      if (d.children) {
+        console.log(d)
+        d._children = d.children;
+        d._children.forEach(collapse);
+        d.children = null;
+      }
+    }
+  root.children.forEach(function(d){collapse(d);update(d)});
+  
+  function update(source) {
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root),
+  links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+  // Declare the nodes…
+  var node = svg.selectAll("g.node")
+    .data(nodes, function(d) { return d.id || (d.id = ++i); });
+// Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+    .attr("class", "node")
+    .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+    .on("click", click);
+
+  nodeEnter.append("circle")
+    .attr("r", 10)
+    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("text")
+    .attr("x", function(d) { 
+      return d.children || d._children ? -13 : 13; })
+    .attr("dy", ".35em")
+    .attr("text-anchor", function(d) { 
+      return d.children || d._children ? "end" : "start"; })
+    .text(function(d) { return d.name; })
+    .style("fill-opacity", 1e-6);
+ 
+ var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+  nodeUpdate.select("circle")
+    .attr("r", 10)
+    .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+  nodeUpdate.select("text")
+    .style("fill-opacity", 1);
+  var nodeExit = node.exit().transition()
+    .duration(duration)
+    .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+    .remove();
+ 
+  nodeExit.select("circle")
+    .attr("r", 1e-6);
+ 
+  nodeExit.select("text")
+    .style("fill-opacity", 1e-6);
+  // Declare the links…
+  var link = svg.selectAll("path.link")
+    .data(links, function(d) { return d.target.id; });
+  // Enter the links.
+  link.enter().insert("path", "g")
+    .attr("class", "link")
+    .attr("d", function(d) {
+    var o = {x: source.x0, y: source.y0};
+    return diagonal({source: o, target: o});
+    });
+  // Transition links to their new position.
+  link.transition()
+    .duration(duration)
+    .attr("d", diagonal);
+
+  link.exit().transition()
+    .duration(duration)
+    .attr("d", function(d) {
+    var o = {x: source.x, y: source.y};
+    return diagonal({source: o, target: o});
+    })
+    .remove();
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+// Toggle children on click.
+ function click(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+  update(d);
+}  </script>  </body>  

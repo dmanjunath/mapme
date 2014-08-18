@@ -1,5 +1,6 @@
 var parseArgs = require('minimist');              //Using the minimist node package 
 var fileParser = require('./lib/fileParser.js');
+var pageCreator = require('./lib/pageCreator.js');  //Creating the page
 var TreeNode = require("tree-node");
 
 var argArray = parseArgs(process.argv.slice(2));  //Grabbing the command line arguments
@@ -20,31 +21,13 @@ else {
   fp.parse(function(err,data){
     // call pagecreator and pass in the rootnode here
     // data is the root node
-    createJSON(data, data, dataObj, function(){
-      console.log(JSON.stringify(dataObj));
-    });
+    // createJSON(data, data, dataObj, function(){
+    //   console.log(JSON.stringify(dataObj,null,2));
+    // });
+    
+    var page = new pageCreator(data,writeFile);
+    page.create();
+
   });
 }
 
-// this should go in the pageCreator file
-function createJSON(rootNode, currentNode, currentState, callback){
-  var state;
-  if(currentNode === rootNode){
-    dataObj.name = rootNode._id;
-    dataObj.children = [];
-    state = dataObj.children;
-    currentState = dataObj.children;
-  }
-
-  currentNode._childIdsList.forEach(function(id){
-    var node = rootNode.getNode(id);
-    if(node._childs.length !== 0){
-      currentState.push({name: node._id, children: []});
-      state = currentState[currentState.length - 1].children;
-    }
-    createJSON(rootNode, node, state, function(){
-
-    });
-  });
-  callback(null);
-}
