@@ -7,6 +7,7 @@ var argArray = parseArgs(process.argv.slice(2));  //Grabbing the command line ar
 var argv = argArray._;
 var writeFile = 'dependencies.html';              //the default file being written to
 var dataObj = {};
+var count = 0;
 
 if(argv.length < 1 || argv.length > 2){
   console.log("Incorrect arguments");
@@ -19,15 +20,9 @@ else {
   var rootNode = new TreeNode(readFile);
   var fp = new fileParser(readFile,rootNode,rootNode,__dirname);
   fp.parse(function(err,data){
-    // call pagecreator and pass in the rootnode here
-    // data is the root node
-    // createJSON(data, data, dataObj, function(){
-    //   console.log(JSON.stringify(dataObj,null,2));
-    // });
-    
+    console.log("Generating " + count);
+    count++;
     var page = new pageCreator(data,writeFile);
     page.create();
-
   });
 }
-

@@ -84,8 +84,8 @@
               "parent": "../api/db.js",
               "data": {}
             },
-            "../config.js": {
-              "id": "../config.js",
+            "fs": {
+              "id": "fs",
               "childs": {},
               "childIdsList": [],
               "parent": "../api/db.js",
@@ -94,7 +94,7 @@
           },
           "childIdsList": [
             "sequelize",
-            "../config.js"
+            "fs"
           ],
           "parent": "api/locations.js",
           "data": {}
@@ -135,8 +135,8 @@
               "parent": "../api/db.js",
               "data": {}
             },
-            "../config.js": {
-              "id": "../config.js",
+            "fs": {
+              "id": "fs",
               "childs": {},
               "childIdsList": [],
               "parent": "../api/db.js",
@@ -145,7 +145,7 @@
           },
           "childIdsList": [
             "sequelize",
-            "../config.js"
+            "fs"
           ],
           "parent": "api/landlords.js",
           "data": {}
@@ -163,12 +163,20 @@
           "childIdsList": [],
           "parent": "api/landlords.js",
           "data": {}
+        },
+        "q": {
+          "id": "q",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/landlords.js",
+          "data": {}
         }
       },
       "childIdsList": [
         "../api/db.js",
         "lodash",
-        "../lib/elasticsearch.js"
+        "../lib/elasticsearch.js",
+        "q"
       ],
       "parent": "testapp.js",
       "data": {}
@@ -186,8 +194,8 @@
               "parent": "../api/db.js",
               "data": {}
             },
-            "../config.js": {
-              "id": "../config.js",
+            "fs": {
+              "id": "fs",
               "childs": {},
               "childIdsList": [],
               "parent": "../api/db.js",
@@ -196,7 +204,7 @@
           },
           "childIdsList": [
             "sequelize",
-            "../config.js"
+            "fs"
           ],
           "parent": "api/ratings.js",
           "data": {}
@@ -237,8 +245,8 @@
               "parent": "../api/db.js",
               "data": {}
             },
-            "../config.js": {
-              "id": "../config.js",
+            "fs": {
+              "id": "fs",
               "childs": {},
               "childIdsList": [],
               "parent": "../api/db.js",
@@ -247,7 +255,7 @@
           },
           "childIdsList": [
             "sequelize",
-            "../config.js"
+            "fs"
           ],
           "parent": "api/flagging.js",
           "data": {}
