@@ -73,29 +73,189 @@
     },
     "api/locations.js": {
       "id": "api/locations.js",
-      "childs": {},
-      "childIdsList": [],
+      "childs": {
+        "../api/db.js": {
+          "id": "../api/db.js",
+          "childs": {
+            "sequelize": {
+              "id": "sequelize",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            },
+            "../config.js": {
+              "id": "../config.js",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            }
+          },
+          "childIdsList": [
+            "sequelize",
+            "../config.js"
+          ],
+          "parent": "api/locations.js",
+          "data": {}
+        },
+        "cities": {
+          "id": "cities",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/locations.js",
+          "data": {}
+        },
+        "../lib/elasticsearch.js": {
+          "id": "../lib/elasticsearch.js",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/locations.js",
+          "data": {}
+        }
+      },
+      "childIdsList": [
+        "../api/db.js",
+        "cities",
+        "../lib/elasticsearch.js"
+      ],
       "parent": "testapp.js",
       "data": {}
     },
     "api/landlords.js": {
       "id": "api/landlords.js",
-      "childs": {},
-      "childIdsList": [],
+      "childs": {
+        "../api/db.js": {
+          "id": "../api/db.js",
+          "childs": {
+            "sequelize": {
+              "id": "sequelize",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            },
+            "../config.js": {
+              "id": "../config.js",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            }
+          },
+          "childIdsList": [
+            "sequelize",
+            "../config.js"
+          ],
+          "parent": "api/landlords.js",
+          "data": {}
+        },
+        "lodash": {
+          "id": "lodash",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/landlords.js",
+          "data": {}
+        },
+        "../lib/elasticsearch.js": {
+          "id": "../lib/elasticsearch.js",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/landlords.js",
+          "data": {}
+        }
+      },
+      "childIdsList": [
+        "../api/db.js",
+        "lodash",
+        "../lib/elasticsearch.js"
+      ],
       "parent": "testapp.js",
       "data": {}
     },
     "api/ratings.js": {
       "id": "api/ratings.js",
-      "childs": {},
-      "childIdsList": [],
+      "childs": {
+        "../api/db.js": {
+          "id": "../api/db.js",
+          "childs": {
+            "sequelize": {
+              "id": "sequelize",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            },
+            "../config.js": {
+              "id": "../config.js",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            }
+          },
+          "childIdsList": [
+            "sequelize",
+            "../config.js"
+          ],
+          "parent": "api/ratings.js",
+          "data": {}
+        },
+        "lodash": {
+          "id": "lodash",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/ratings.js",
+          "data": {}
+        },
+        "../lib/elasticsearch.js": {
+          "id": "../lib/elasticsearch.js",
+          "childs": {},
+          "childIdsList": [],
+          "parent": "api/ratings.js",
+          "data": {}
+        }
+      },
+      "childIdsList": [
+        "../api/db.js",
+        "lodash",
+        "../lib/elasticsearch.js"
+      ],
       "parent": "testapp.js",
       "data": {}
     },
     "api/flagging.js": {
       "id": "api/flagging.js",
-      "childs": {},
-      "childIdsList": [],
+      "childs": {
+        "../api/db.js": {
+          "id": "../api/db.js",
+          "childs": {
+            "sequelize": {
+              "id": "sequelize",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            },
+            "../config.js": {
+              "id": "../config.js",
+              "childs": {},
+              "childIdsList": [],
+              "parent": "../api/db.js",
+              "data": {}
+            }
+          },
+          "childIdsList": [
+            "sequelize",
+            "../config.js"
+          ],
+          "parent": "api/flagging.js",
+          "data": {}
+        }
+      },
+      "childIdsList": [
+        "../api/db.js"
+      ],
       "parent": "testapp.js",
       "data": {}
     },

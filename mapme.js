@@ -15,7 +15,7 @@ else {
     writeFile = argv[1];
   }
   var rootNode = new TreeNode(readFile);
-  var fp = new fileParser(readFile,rootNode,rootNode);
+  var fp = new fileParser(readFile,rootNode,rootNode,__dirname);
   fp.parse(function(err,data){
     console.log(data);
   });
