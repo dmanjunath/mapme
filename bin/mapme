@@ -23,7 +23,8 @@ else {
     writeFile = argv[1];
   }
   var endFile = path.dirname(fileName) + '/' + writeFile;
-  var rootNode = new TreeNode(fileName);
+  var resolvedFileName = path.resolve(__dirname, fileName);
+  var rootNode = new TreeNode(resolvedFileName);
   var fp = new fileParser(fileName,rootNode,rootNode,__dirname);
   fp.parse(function(err,data){
     var page = new pageCreator(data,endFile);
