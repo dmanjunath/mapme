@@ -13,7 +13,9 @@ var openFile = require('open');
 var path = require('path');
 
 if(argv.length < 1 || argv.length > 2){
-  console.log("Incorrect arguments");
+  console.log("Incorrect usage.");
+  console.log("Correct Usage: mapme path/to/file.js [name_of_output_file.html OPTIONAL]");
+  process.exit(0);
 }
 else {
   var fileName = argv[0];
