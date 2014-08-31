@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+var parseArgs = require('minimist');              //Using the minimist node package 
+var fileParser = require('../lib/file_parser.js');
+var pageCreator = require('../lib/page_creator.js');  //Creating the page
+var TreeNode = require("tree-node");
+
+var argArray = parseArgs(process.argv.slice(2));  //Grabbing the command line arguments
+var argv = argArray._;
+var writeFile = 'dependencies.html';              //the default file being written to
+var dataObj = {};
+var openFile = require('open');
+var path = require('path');
+
+if(argv.length < 1 || argv.length > 2){
+  console.log("Incorrect arguments");
+}
+else {
+  var fileName = argv[0];
+  if(argv[1]){
+    writeFile = argv[1];
+  }
+  var endFile = path.dirname(fileName) + '/' + writeFile;
+  var rootNode = new TreeNode(fileName);
+  var fp = new fileParser(fileName,rootNode,rootNode,__dirname);
+  fp.parse(function(err,data){
+    var page = new pageCreator(data,endFile);
+    page.create();
+  });
+}
+
+process.on('exit', function () {
+  openFile(endFile);
+});

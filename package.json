@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "mapme": "bin/mapme"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/dmanjunath/mapme.git"
@@ -18,7 +21,7 @@
   "homepage": "https://github.com/dmanjunath/mapme",
   "dependencies": {
     "open": "0.0.5",
-    "optimist": "~0.6.1",
+    "minimist": "1.1.0",
     "q": "^1.0.1",
     "tree-node": "~0.2.0"
   }
