@@ -11,6 +11,7 @@ var writeFile = 'dependencies.html';              //the default file being writt
 var dataObj = {};
 var openFile = require('open');
 var path = require('path');
+var fs = require('fs');
 
 if(argv.length < 1 || argv.length > 2){
   console.log("Incorrect usage.");
@@ -22,10 +23,11 @@ else {
   if(argv[1]){
     writeFile = argv[1];
   }
-  var endFile = path.dirname(fileName) + '/' + writeFile;
-  var resolvedFileName = path.resolve(__dirname, fileName);
+  var endFile = path.dirname(path.resolve(process.cwd(), fileName)) + '/' + writeFile;
+  var resolvedFileName = path.resolve(process.cwd(), fileName);
+
   var rootNode = new TreeNode(resolvedFileName);
-  var fp = new fileParser(fileName,rootNode,rootNode,__dirname);
+  var fp = new fileParser(fileName,rootNode,rootNode, process.cwd());
   fp.parse(function(err,data){
     var page = new pageCreator(data,endFile);
     page.create();

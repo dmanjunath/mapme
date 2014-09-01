@@ -1,8 +1,8 @@
 {
   "name": "mapme",
-  "version": "0.0.0",
-  "description": "",
-  "main": "mapme.js",
+  "version": "0.1.0",
+  "description": "Visualize a node project's dependency tree",
+  "main": "bin/mapme",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,6 +19,11 @@
     "url": "https://github.com/dmanjunath/mapme/issues"
   },
   "homepage": "https://github.com/dmanjunath/mapme",
+  "author": {
+    "name": "Dheeraj Manjunath",
+    "email": "dheerajmanju1@gmail.com",
+    "url": "https://github.com/dmanjunath"
+  },
   "dependencies": {
     "open": "0.0.5",
     "minimist": "1.1.0",
