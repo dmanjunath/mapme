@@ -22,3 +22,10 @@ path/to/file.js is the entry point of your node.js app(like app.js usually). The
 If you installed mapme locally as a npm module, you can find it in your project's 
      
      /node_modules/.bin/mapme
+
+#Created By
+Hareesh Nagaraj     
+Dheeraj Manjunath
+
+#License
+MIT
